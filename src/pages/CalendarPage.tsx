@@ -10,11 +10,10 @@ import {
   endOfWeek, 
   isSameMonth, 
   isSameDay, 
-  addDays, 
   eachDayOfInterval 
 } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -45,31 +44,42 @@ const CalendarPage = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-        <h2 className="text-xl font-semibold capitalize">
-          {format(currentMonth, 'MMMM yyyy', { locale: ptBR })}
-        </h2>
-        <div className="flex gap-2">
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary/10 p-2 rounded-full text-primary">
+            <CalendarIcon size={24} />
+          </div>
+          <h2 className="text-2xl font-bold capitalize text-slate-800 dark:text-white">
+            {format(currentMonth, 'MMMM yyyy', { locale: ptBR })}
+          </h2>
+        </div>
+        <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
           <button 
             onClick={prevMonth}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-all shadow-none hover:shadow-sm"
           >
             <ChevronLeft size={20} />
           </button>
           <button 
+            onClick={() => setCurrentMonth(new Date())}
+            className="px-4 py-2 text-sm font-medium hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-all"
+          >
+            Hoje
+          </button>
+          <button 
             onClick={nextMonth}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-all shadow-none hover:shadow-sm"
           >
             <ChevronRight size={20} />
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-100">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div className="grid grid-cols-7 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
           {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day) => (
-            <div key={day} className="py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
+            <div key={day} className="py-4 text-center text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
               {day}
             </div>
           ))}
@@ -84,17 +94,23 @@ const CalendarPage = () => {
                 key={idx}
                 onClick={() => handleDayClick(day)}
                 className={cn(
-                  "h-24 p-2 border-r border-b border-gray-50 flex flex-col items-start transition-colors hover:bg-indigo-50/30",
-                  !isCurrentMonth && "bg-gray-50/50 text-gray-400",
-                  isToday && "bg-indigo-50/50"
+                  "group relative h-28 md:h-32 p-3 border-r border-b border-slate-100 dark:border-slate-800 flex flex-col items-start transition-all hover:bg-primary/5",
+                  !isCurrentMonth && "bg-slate-50/50 dark:bg-slate-950/50 text-slate-300 dark:text-slate-700",
+                  isToday && "bg-primary/5"
                 )}
               >
                 <span className={cn(
-                  "text-sm font-medium w-7 h-7 flex items-center justify-center rounded-full",
-                  isToday && "bg-indigo-600 text-white"
+                  "text-sm font-semibold w-8 h-8 flex items-center justify-center rounded-full transition-colors",
+                  isToday ? "bg-primary text-white shadow-lg shadow-primary/30" : "group-hover:text-primary"
                 )}>
                   {format(day, 'd')}
                 </span>
+                
+                {/* Indicador de que há lançamentos (exemplo visual) */}
+                <div className="mt-auto flex gap-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-rose-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
               </button>
             );
           })}
