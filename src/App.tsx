@@ -1,12 +1,20 @@
-
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import CalendarPage from './pages/CalendarPage';
+import DailyDetails from './pages/DailyDetails';
 
 function App() {
-
   return (
-    <>
-    <div>Peitinhooooooo</div>
-    </>
-  )
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<CalendarPage />} />
+          <Route path="/dia/:date" element={<DailyDetails />} />
+        </Routes>
+      </Layout>
+    </Router>
+  );
 }
 
-export default App
+export default App;
