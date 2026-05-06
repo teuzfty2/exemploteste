@@ -5,7 +5,7 @@ export interface FinanceEntry {
   description: string;
   amount: number;
   type: EntryType;
-  date: string; // ISO string YYYY-MM-DD
+  date: string;
 }
 
 export interface DailySummary {

@@ -2,8 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ArrowLeft, Plus, Trash2, TrendingUp, TrendingDown } from 'lucide-react';
-import { FinanceEntry } from '../types/finance';
+import { ArrowLeft, Plus, Trash2, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import type { FinanceEntry } from '../types/finance';
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 const DailyDetails = () => {
   const { date } = useParams<{ date: string }>();
@@ -13,7 +19,6 @@ const DailyDetails = () => {
   const [amount, setAmount] = useState('');
   const [type, setType] = useState<'ganho' | 'gasto'>('ganho');
 
-  // Carregar dados do localStorage
   useEffect(() => {
     const saved = localStorage.getItem(`finance_${date}`);
     if (saved) {
@@ -21,7 +26,6 @@ const DailyDetails = () => {
     }
   }, [date]);
 
-  // Salvar dados no localStorage
   const saveEntries = (newEntries: FinanceEntry[]) => {
     setEntries(newEntries);
     localStorage.setItem(`finance_${date}`, JSON.stringify(newEntries));
