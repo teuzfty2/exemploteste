@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { format, addMonths, subMonths, parseISO, isSameDay } from 'date-fns';
+import { 
+  format, 
+  addMonths, 
+  subMonths, 
+  parseISO, 
+  isSameDay,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  eachDayOfInterval,
+  isSameMonth
+} from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { 
   ChevronLeft, 
@@ -11,7 +23,8 @@ import {
   Wallet, 
   Receipt,
   ArrowRight,
-  PlusCircle
+  PlusCircle,
+  ChevronDown
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -23,6 +36,7 @@ function cn(...inputs: ClassValue[]) {
 
 const DashboardPage = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [showCalendar, setShowCalendar] = useState(false);
   const navigate = useNavigate();
   const { entries } = useFinanceStore();
 
@@ -44,8 +58,8 @@ const DashboardPage = () => {
 
   const saldo = totalGanhos - totalGastos;
 
-  // Agrupar dias que tem movimentação
-  const daysMap = monthEntries.reduce((acc, entry) => {
+  // Agrupar dias que tem movimentação para listar e mostrar no calendário
+  const daysMap = entries.reduce((acc, entry) => {
     if (!acc[entry.date]) acc[entry.date] = { ganhos: 0, gastos: 0, count: 0 };
     if (entry.type === 'ganho') acc[entry.date].ganhos += entry.amount;
     else acc[entry.date].gastos += entry.amount;
@@ -53,49 +67,114 @@ const DashboardPage = () => {
     return acc;
   }, {} as Record<string, { ganhos: number, gastos: number, count: number }>);
 
-  // Ordenar do mais recente para o mais antigo
-  const activeDays = Object.keys(daysMap).sort((a, b) => b.localeCompare(a));
+  // Filtrar apenas os dias do mês atual que têm movimentação para a lista de cards
+  const activeDays = Object.keys(daysMap)
+    .filter(date => date.startsWith(currentMonthStr))
+    .sort((a, b) => b.localeCompare(a));
 
   const handleGoToToday = () => {
     const todayStr = format(new Date(), 'yyyy-MM-dd');
     navigate(`/dia/${todayStr}`);
   };
 
-  const handleDateSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value) {
-      navigate(`/dia/${e.target.value}`);
-    }
-  };
+  // Lógica do Calendário (Grid)
+  const monthStart = startOfMonth(currentMonth);
+  const monthEnd = endOfMonth(monthStart);
+  const startDate = startOfWeek(monthStart);
+  const endDate = endOfWeek(monthEnd);
+  const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
+  const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
   return (
     <div className="space-y-6 md:space-y-8 max-w-4xl mx-auto pb-20 md:pb-0">
+      
       {/* Header com Navegação de Meses */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 md:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 p-3 rounded-2xl text-primary">
-            <CalendarIcon size={24} />
-          </div>
-          <div>
-            <h2 className="text-xl md:text-2xl font-black capitalize text-slate-800 dark:text-white leading-tight">
-              {format(currentMonth, 'MMMM', { locale: ptBR })}
-            </h2>
-            <p className="text-sm font-medium text-slate-500">{format(currentMonth, 'yyyy')}</p>
-          </div>
-        </div>
-        <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl self-end sm:self-auto border border-slate-100 dark:border-slate-800">
-          <button onClick={prevMonth} className="p-2 md:p-3 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all hover:shadow-sm">
-            <ChevronLeft size={18} />
-          </button>
+      <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          
           <button 
-            onClick={() => setCurrentMonth(new Date())}
-            className="px-4 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all hover:shadow-sm"
+            onClick={() => setShowCalendar(!showCalendar)}
+            className="flex items-center gap-3 text-left group hover:opacity-80 transition-opacity"
           >
-            Mês Atual
+            <div className="bg-primary/10 p-3 rounded-2xl text-primary group-hover:scale-105 transition-transform">
+              <CalendarIcon size={24} />
+            </div>
+            <div className="flex items-center gap-2">
+              <div>
+                <h2 className="text-xl md:text-2xl font-black capitalize text-slate-800 dark:text-white leading-tight">
+                  {format(currentMonth, 'MMMM', { locale: ptBR })}
+                </h2>
+                <p className="text-sm font-medium text-slate-500">{format(currentMonth, 'yyyy')}</p>
+              </div>
+              <ChevronDown 
+                size={20} 
+                className={cn(
+                  "text-slate-400 transition-transform duration-300 ml-1", 
+                  showCalendar && "rotate-180"
+                )} 
+              />
+            </div>
           </button>
-          <button onClick={nextMonth} className="p-2 md:p-3 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all hover:shadow-sm">
-            <ChevronRight size={18} />
-          </button>
+
+          <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl self-end sm:self-auto border border-slate-100 dark:border-slate-800">
+            <button onClick={prevMonth} className="p-2 md:p-3 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all hover:shadow-sm text-slate-600 dark:text-slate-300">
+              <ChevronLeft size={18} />
+            </button>
+            <button 
+              onClick={() => setCurrentMonth(new Date())}
+              className="px-4 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all hover:shadow-sm"
+            >
+              Mês Atual
+            </button>
+            <button onClick={nextMonth} className="p-2 md:p-3 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all hover:shadow-sm text-slate-600 dark:text-slate-300">
+              <ChevronRight size={18} />
+            </button>
+          </div>
         </div>
+
+        {/* Dropdown do Calendário Interativo */}
+        {showCalendar && (
+          <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="grid grid-cols-7 gap-1 text-center mb-2">
+              {weekDays.map(d => (
+                <div key={d} className="text-xs font-bold text-slate-400 py-2">{d}</div>
+              ))}
+            </div>
+            <div className="grid grid-cols-7 gap-1 md:gap-2">
+              {calendarDays.map((day, idx) => {
+                const dateStr = format(day, 'yyyy-MM-dd');
+                const dayData = daysMap[dateStr];
+                const isCurrentMonth = isSameMonth(day, currentMonth);
+                const isTodayDate = isSameDay(day, new Date());
+
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => navigate(`/dia/${dateStr}`)}
+                    className={cn(
+                      "flex flex-col items-center justify-center p-2 rounded-2xl h-12 md:h-14 transition-all relative group",
+                      !isCurrentMonth 
+                        ? "text-slate-300 dark:text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50" 
+                        : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800",
+                      isTodayDate && "bg-primary/10 text-primary font-bold hover:bg-primary/20",
+                      "hover:scale-105 active:scale-95"
+                    )}
+                  >
+                    <span className="text-sm md:text-base font-medium">{format(day, 'd')}</span>
+                    
+                    {/* Pontinhos indicadores se houver movimentação */}
+                    {dayData && isCurrentMonth && (
+                      <div className="flex gap-0.5 mt-1">
+                        {dayData.ganhos > 0 && <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-emerald-500" />}
+                        {dayData.gastos > 0 && <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-rose-500" />}
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Cards de Resumo Mensal */}
@@ -149,27 +228,18 @@ const DashboardPage = () => {
 
       {/* Lista de Dias Movimentados */}
       <div>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">
             Movimentações por Dia
           </h3>
-          <div className="flex items-center gap-2 self-start sm:self-auto">
-            {/* Input de Data que abre o calendário nativo do sistema */}
-            <input
-              type="date"
-              onChange={handleDateSelect}
-              className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-bold px-3 py-2 md:py-2.5 rounded-xl border border-transparent focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all cursor-pointer h-[40px] md:h-[44px]"
-              title="Escolher uma data específica"
-            />
-            <button 
-              onClick={handleGoToToday}
-              className="flex items-center gap-2 text-sm font-bold text-primary bg-primary/10 hover:bg-primary/20 px-4 py-2 md:py-2.5 rounded-xl transition-colors shrink-0 h-[40px] md:h-[44px]"
-            >
-              <PlusCircle size={18} />
-              <span className="hidden sm:inline">Adicionar Hoje</span>
-              <span className="sm:hidden">Hoje</span>
-            </button>
-          </div>
+          <button 
+            onClick={handleGoToToday}
+            className="flex items-center gap-2 text-sm font-bold text-primary bg-primary/10 hover:bg-primary/20 px-4 py-2 rounded-xl transition-colors"
+          >
+            <PlusCircle size={18} />
+            <span className="hidden sm:inline">Lançamento de Hoje</span>
+            <span className="sm:hidden">Hoje</span>
+          </button>
         </div>
 
         {activeDays.length === 0 ? (
@@ -185,7 +255,7 @@ const DashboardPage = () => {
               onClick={handleGoToToday}
               className="bg-primary text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/25 hover:bg-primary/90 transition-colors"
             >
-              Lançar para Hoje
+              Registrar Lançamento
             </button>
           </div>
         ) : (
