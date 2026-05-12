@@ -23,6 +23,7 @@ import {
   Wallet, 
   Receipt,
   ArrowRight,
+  ArrowLeft,
   PlusCircle,
   ChevronDown
 } from 'lucide-react';
@@ -88,6 +89,17 @@ const DashboardPage = () => {
   return (
     <div className="space-y-6 md:space-y-8 max-w-4xl mx-auto pb-20 md:pb-0">
       
+      {/* Botão Voltar */}
+      <button 
+        onClick={() => navigate('/')}
+        className="group flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-medium -mb-2"
+      >
+        <div className="p-1.5 rounded-lg group-hover:bg-primary/10 transition-colors">
+          <ArrowLeft size={18} />
+        </div>
+        <span>Voltar para o Início</span>
+      </button>
+
       {/* Header com Navegação de Meses */}
       <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
