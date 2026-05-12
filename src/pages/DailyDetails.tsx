@@ -88,25 +88,30 @@ const DailyDetails = () => {
         
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-1 capitalize tracking-tight">
-              {formattedDate}
-            </h2>
-            <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium">Fluxo de caixa diário</p>
+            {/* Wrapper invisível com overflow-hidden para dar o efeito de "recorte" da roleta do relógio */}
+            <div className="overflow-hidden pb-1">
+              <h2 
+                key={date} // A chave muda quando a data muda, forçando o React a recriar e rodar a animação
+                className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white capitalize tracking-tight animate-in fade-in slide-in-from-top-8 duration-300"
+              >
+                {formattedDate}
+              </h2>
+            </div>
+            <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium mt-1">Fluxo de caixa diário</p>
           </div>
 
           {/* Controles de Calendário na aba do Dia */}
           <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700 w-fit shadow-sm">
             <button 
               onClick={() => navigate(`/dia/${prevDayStr}`)}
-              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all text-slate-600 dark:text-slate-300 shadow-sm"
+              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all text-slate-600 dark:text-slate-300 shadow-sm active:scale-95"
               title="Dia anterior"
             >
               <ChevronLeft size={20} />
             </button>
             
-            <div className="relative flex items-center justify-center p-2 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all cursor-pointer group shadow-sm" title="Escolher outra data">
+            <div className="relative flex items-center justify-center p-2 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all cursor-pointer group shadow-sm active:scale-95" title="Escolher outra data">
               <Calendar size={20} className="text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors" />
-              {/* Input nativo invisível que abre o seletor completo do dispositivo */}
               <input 
                 type="date" 
                 value={date}
@@ -117,7 +122,7 @@ const DailyDetails = () => {
 
             <button 
               onClick={() => navigate(`/dia/${nextDayStr}`)}
-              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all text-slate-600 dark:text-slate-300 shadow-sm"
+              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all text-slate-600 dark:text-slate-300 shadow-sm active:scale-95"
               title="Próximo dia"
             >
               <ChevronRight size={20} />
