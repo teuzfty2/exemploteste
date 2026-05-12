@@ -61,6 +61,12 @@ const DashboardPage = () => {
     navigate(`/dia/${todayStr}`);
   };
 
+  const handleDateSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value) {
+      navigate(`/dia/${e.target.value}`);
+    }
+  };
+
   return (
     <div className="space-y-6 md:space-y-8 max-w-4xl mx-auto pb-20 md:pb-0">
       {/* Header com Navegação de Meses */}
@@ -143,18 +149,27 @@ const DashboardPage = () => {
 
       {/* Lista de Dias Movimentados */}
       <div>
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">
             Movimentações por Dia
           </h3>
-          <button 
-            onClick={handleGoToToday}
-            className="flex items-center gap-2 text-sm font-bold text-primary bg-primary/10 hover:bg-primary/20 px-4 py-2 rounded-xl transition-colors"
-          >
-            <PlusCircle size={18} />
-            <span className="hidden sm:inline">Lançamento de Hoje</span>
-            <span className="sm:hidden">Hoje</span>
-          </button>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {/* Input de Data que abre o calendário nativo do sistema */}
+            <input
+              type="date"
+              onChange={handleDateSelect}
+              className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-bold px-3 py-2 md:py-2.5 rounded-xl border border-transparent focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all cursor-pointer h-[40px] md:h-[44px]"
+              title="Escolher uma data específica"
+            />
+            <button 
+              onClick={handleGoToToday}
+              className="flex items-center gap-2 text-sm font-bold text-primary bg-primary/10 hover:bg-primary/20 px-4 py-2 md:py-2.5 rounded-xl transition-colors shrink-0 h-[40px] md:h-[44px]"
+            >
+              <PlusCircle size={18} />
+              <span className="hidden sm:inline">Adicionar Hoje</span>
+              <span className="sm:hidden">Hoje</span>
+            </button>
+          </div>
         </div>
 
         {activeDays.length === 0 ? (
@@ -170,7 +185,7 @@ const DashboardPage = () => {
               onClick={handleGoToToday}
               className="bg-primary text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/25 hover:bg-primary/90 transition-colors"
             >
-              Registrar Lançamento
+              Lançar para Hoje
             </button>
           </div>
         ) : (
