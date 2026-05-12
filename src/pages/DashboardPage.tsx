@@ -92,7 +92,7 @@ const DashboardPage = () => {
       {/* Botão Voltar */}
       <button 
         onClick={() => navigate('/')}
-        className="group flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-medium -mb-2"
+        className="group flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-medium"
       >
         <div className="p-1.5 rounded-lg group-hover:bg-primary/10 transition-colors">
           <ArrowLeft size={18} />
