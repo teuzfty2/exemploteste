@@ -1,8 +1,19 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, addDays, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ArrowLeft, Plus, Trash2, TrendingUp, TrendingDown, Wallet, ReceiptText } from 'lucide-react';
+import { 
+  ArrowLeft, 
+  Plus, 
+  Trash2, 
+  TrendingUp, 
+  TrendingDown, 
+  Wallet, 
+  ReceiptText,
+  ChevronLeft,
+  ChevronRight,
+  Calendar
+} from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useFinanceStore } from '../store/useFinanceStore';
@@ -50,7 +61,12 @@ const DailyDetails = () => {
 
   const saldo = totalGanhos - totalGastos;
 
-  const formattedDate = date ? format(parseISO(date), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }) : '';
+  const currentDateObj = date ? parseISO(date) : new Date();
+  const formattedDate = format(currentDateObj, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
+  
+  // Datas para navegação rápida
+  const prevDayStr = format(subDays(currentDateObj, 1), 'yyyy-MM-dd');
+  const nextDayStr = format(addDays(currentDateObj, 1), 'yyyy-MM-dd');
 
   return (
     <div className="space-y-6 md:space-y-8 max-w-4xl mx-auto pb-20 md:pb-0">
@@ -61,18 +77,52 @@ const DailyDetails = () => {
         <div className="p-1.5 rounded-lg group-hover:bg-primary/10 transition-colors">
           <ArrowLeft size={18} />
         </div>
-        <span>Voltar</span>
+        <span>Voltar para Visão Mensal</span>
       </button>
 
+      {/* Header com Navegação de Data Embutida */}
       <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden">
         <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5 pointer-events-none">
           <ReceiptText size={80} className="md:w-[120px] md:h-[120px]" />
         </div>
-        <div className="relative z-10">
-          <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-1 capitalize tracking-tight">
-            {formattedDate}
-          </h2>
-          <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium">Fluxo de caixa</p>
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-1 capitalize tracking-tight">
+              {formattedDate}
+            </h2>
+            <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium">Fluxo de caixa diário</p>
+          </div>
+
+          {/* Controles de Calendário na aba do Dia */}
+          <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700 w-fit shadow-sm">
+            <button 
+              onClick={() => navigate(`/dia/${prevDayStr}`)}
+              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all text-slate-600 dark:text-slate-300 shadow-sm"
+              title="Dia anterior"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            
+            <div className="relative flex items-center justify-center p-2 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all cursor-pointer group shadow-sm" title="Escolher outra data">
+              <Calendar size={20} className="text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors" />
+              {/* Input nativo invisível que abre o seletor completo do dispositivo */}
+              <input 
+                type="date" 
+                value={date}
+                onChange={(e) => { if(e.target.value) navigate(`/dia/${e.target.value}`) }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+            </div>
+
+            <button 
+              onClick={() => navigate(`/dia/${nextDayStr}`)}
+              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all text-slate-600 dark:text-slate-300 shadow-sm"
+              title="Próximo dia"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -164,14 +214,14 @@ const DailyDetails = () => {
 
       <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden">
         <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="font-bold text-slate-900 dark:text-white">Lançamentos</h3>
+          <h3 className="font-bold text-slate-900 dark:text-white">Lançamentos deste dia</h3>
         </div>
         <div className="divide-y divide-slate-100 dark:divide-slate-800">
           {entries.length === 0 ? (
             <div className="p-12 text-center">
               <div className="flex flex-col items-center gap-3 text-slate-400">
                 <ReceiptText size={40} strokeWidth={1.5} />
-                <p className="text-sm font-medium">Nenhum registro.</p>
+                <p className="text-sm font-medium">Nenhum registro encontrado para este dia.</p>
               </div>
             </div>
           ) : (
