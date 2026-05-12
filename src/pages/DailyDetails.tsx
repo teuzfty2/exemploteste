@@ -55,7 +55,7 @@ const DailyDetails = () => {
   return (
     <div className="space-y-6 md:space-y-8 max-w-4xl mx-auto pb-20 md:pb-0">
       <button 
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/financas')}
         className="group flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-medium"
       >
         <div className="p-1.5 rounded-lg group-hover:bg-primary/10 transition-colors">
