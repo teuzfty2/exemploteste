@@ -1,5 +1,9 @@
-import { ReactNode } from 'react';
+
+// Libs
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+
+// Icone
 import { Wallet } from 'lucide-react';
 
 const Layout = ({ children }: { children: ReactNode }) => {

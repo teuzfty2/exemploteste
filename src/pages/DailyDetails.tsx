@@ -1,7 +1,12 @@
+
+// Libs
 import { useState, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format, parseISO, addDays, subDays } from 'date-fns';
+import { twMerge } from 'tailwind-merge';
 import { ptBR } from 'date-fns/locale';
+
+// Icones
 import { 
   ArrowLeft, 
   Plus, 
@@ -14,30 +19,42 @@ import {
   ChevronRight,
   Calendar
 } from 'lucide-react';
+
+// Types
 import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { useFinanceStore } from '../store/useFinanceStore';
 import type { FinanceEntry } from '../types/finance';
+
+// Store
+import { useFinanceStore } from '../store/useFinanceStore';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 const DailyDetails = () => {
+  // Pega a data da URL
   const { date } = useParams<{ date: string }>();
+  // Navegação entre páginas
   const navigate = useNavigate();
+  // Dados e ações da store
   const { addEntry, deleteEntry, entries: allEntries } = useFinanceStore();
   
+  // Estados do formulário
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [type, setType] = useState<'ganho' | 'gasto'>('ganho');
-
+  
+  // Filtra somente os registros do dia atual
   const entries = allEntries.filter(e => e.date === date);
 
+  // Adiciona uma nova entrada financeira
   const handleAddEntry = (e: FormEvent) => {
     e.preventDefault();
+
+    // Impede envio vazio
     if (!description || !amount) return;
 
+    // Cria nova entrada
     const newEntry: FinanceEntry = {
       id: crypto.randomUUID(),
       description,
@@ -46,25 +63,37 @@ const DailyDetails = () => {
       date: date!,
     };
 
+    // Salva na store
     addEntry(newEntry);
+
+    // Limpa formulário
     setDescription('');
     setAmount('');
   };
 
+  // Soma total de ganhos
   const totalGanhos = entries
     .filter(e => e.type === 'ganho')
     .reduce((acc, curr) => acc + curr.amount, 0);
 
+  // Soma total de gastos
   const totalGastos = entries
     .filter(e => e.type === 'gasto')
     .reduce((acc, curr) => acc + curr.amount, 0);
 
+  // Calcula saldo final
   const saldo = totalGanhos - totalGastos;
 
+  // Converte a data da URL para objeto Date
   const currentDateObj = date ? parseISO(date) : new Date();
+
+  // Formata data para português
   const formattedDate = format(currentDateObj, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
   
+  // Dia anterior
   const prevDayStr = format(subDays(currentDateObj, 1), 'yyyy-MM-dd');
+
+  // Próximo dia
   const nextDayStr = format(addDays(currentDateObj, 1), 'yyyy-MM-dd');
 
   return (

@@ -1,10 +1,15 @@
 "use client";
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import HomePage from './pages/HomePage';
-import DashboardPage from './pages/DashboardPage';
-import DailyDetails from './pages/DailyDetails';
+// Libs
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+// Componentes
+import Layout from "./components/Layout";
+
+// Pages
+import HomePage from "./pages/HomePage";
+import DashboardPage from "./pages/DashboardPage";
+import DailyDetails from "./pages/DailyDetails";
 
 function App() {
   return (

@@ -1,4 +1,4 @@
-export type EntryType = 'ganho' | 'gasto';
+export type EntryType = "ganho" | "gasto";
 
 export interface FinanceEntry {
   id: string;
