@@ -20,7 +20,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Calendar,
-  Tag
+  Tag,
+  DollarSign
 } from 'lucide-react';
 
 // Types
@@ -40,8 +41,8 @@ const DailyDetails = () => {
   const { addEntry, deleteEntry, entries: allEntries } = useFinanceStore();
   
   // Estados do formulário
-  const [category, setCategory] = useState(''); // Novo: Categoria/Grupo
-  const [description, setDescription] = useState(''); // Descrição detalhada
+  const [category, setCategory] = useState('');
+  const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [type, setType] = useState<'ganho' | 'gasto'>('ganho');
   
@@ -79,6 +80,20 @@ const DailyDetails = () => {
 
   const containerVariants = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
   const itemVariants = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
+
+  // Configurações dinâmicas de texto conforme o tipo selecionado
+  const typeConfigs = {
+    ganho: {
+      categoryPlaceholder: "Lugar que você ganhou",
+      descriptionPlaceholder: "Salário, diária, quinzena?",
+      color: "emerald"
+    },
+    gasto: {
+      categoryPlaceholder: "Cartão, Supermercado...",
+      descriptionPlaceholder: "Transporte, lanche...",
+      color: "rose"
+    }
+  };
 
   return (
     <motion.div initial="hidden" animate="show" variants={containerVariants} className="space-y-6 md:space-y-8 max-w-4xl mx-auto pb-20 md:pb-0">
@@ -137,12 +152,41 @@ const DailyDetails = () => {
           Novo Lançamento
         </h3>
         <form onSubmit={handleAddEntry} className="flex flex-col gap-4">
-          {/* Categoria/Grupo */}
+          
+          {/* 1. Tipo (Ganho ou Perda) */}
+          <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+            <button
+              type="button"
+              onClick={() => setType('ganho')}
+              className={cn(
+                "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all",
+                type === 'ganho' 
+                  ? "bg-white dark:bg-slate-700 text-emerald-600 shadow-sm" 
+                  : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+              )}
+            >
+              <TrendingUp size={16} /> Ganho
+            </button>
+            <button
+              type="button"
+              onClick={() => setType('gasto')}
+              className={cn(
+                "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all",
+                type === 'gasto' 
+                  ? "bg-white dark:bg-slate-700 text-rose-600 shadow-sm" 
+                  : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+              )}
+            >
+              <TrendingDown size={16} /> Perda
+            </button>
+          </div>
+
+          {/* 2. Grupo / Categoria */}
           <div className="relative">
             <Tag size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Grupo (ex: Cartão, Supermercado, Salário...)"
+              placeholder={typeConfigs[type].categoryPlaceholder}
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="w-full pl-11 p-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all"
@@ -150,37 +194,37 @@ const DailyDetails = () => {
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* 3. Valor */}
+          <div className="relative">
+            <DollarSign size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="number"
               step="0.01"
               placeholder="Valor (R$)"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full p-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              className="w-full pl-11 p-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all"
               required
             />
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value as 'ganho' | 'gasto')}
-              className="w-full p-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all cursor-pointer"
-            >
-              <option value="ganho">🟢 Ganho</option>
-              <option value="gasto">🔴 Perda / Gasto</option>
-            </select>
           </div>
 
-          {/* Descrição Detalhada */}
+          {/* 4. Descrição Detalhada */}
           <textarea
-            placeholder="Descrição: (ex: gastei comprando uma porção de fritas)"
+            placeholder={typeConfigs[type].descriptionPlaceholder}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="w-full p-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all min-h-[80px] resize-none"
           />
 
-          <button type="submit" className="w-full bg-primary text-white p-4 rounded-xl font-bold hover:bg-primary/90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+          <button 
+            type="submit" 
+            className={cn(
+              "w-full text-white p-4 rounded-xl font-bold active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2",
+              type === 'ganho' ? "bg-emerald-600 shadow-emerald-600/20" : "bg-rose-600 shadow-rose-600/20"
+            )}
+          >
             <Plus size={20} />
-            Adicionar Lançamento
+            Adicionar {type === 'ganho' ? 'Ganho' : 'Perda'}
           </button>
         </form>
       </motion.div>
