@@ -4,8 +4,8 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
-// Icone
-import { ChevronRight } from "lucide-react";
+// Icones
+import { ChevronRight, User } from "lucide-react";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -29,15 +29,11 @@ const HomePage = () => {
         <div className="absolute top-6 right-6 text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all">
           <ChevronRight size={24} />
         </div>
-        <div className="w-28 h-28 mb-5 rounded-full overflow-hidden border-4 border-slate-50 dark:border-slate-800 shadow-md group-hover:scale-105 transition-transform duration-300 bg-slate-100 dark:bg-slate-800">
-          <img
-            src="https://ui-avatars.com/api/?name=Matheus+Filipe&background=8b5cf6&color=fff&size=256&font-size=0.4"
-            alt="Matheus Filipe"
-            className="w-full h-full object-cover"
-          />
+        <div className="w-28 h-28 mb-5 rounded-full flex items-center justify-center border-4 border-slate-50 dark:border-slate-800 shadow-md group-hover:scale-105 transition-transform duration-300 bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:text-primary">
+          <User size={48} />
         </div>
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-          Matheus Filipe
+          Bem-vindo
         </h2>
         <p className="text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-4 py-1.5 rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-colors">
           Acessar minhas finanças
