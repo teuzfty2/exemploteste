@@ -1,10 +1,12 @@
-
 // Libs
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
 // Icone
 import { Wallet } from 'lucide-react';
+
+// Componentes
+import ThemeToggle from './ThemeToggle';
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
@@ -19,6 +21,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
               Finança<span className="text-primary">Diária</span>
             </span>
           </Link>
+          
+          {/* Botão de Alternar Tema */}
+          <ThemeToggle />
         </div>
       </header>
       <main className="max-w-5xl mx-auto px-4 py-8 animate-in fade-in duration-500">
