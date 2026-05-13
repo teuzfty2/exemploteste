@@ -2,6 +2,7 @@
 
 // Lib
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 // Icone
 import { ChevronRight } from "lucide-react";
@@ -10,11 +11,18 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex flex-col items-center justify-center min-h-[70vh] text-center px-4"
+    >
       <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-12 tracking-tight">
         Controle Financeiro
       </h1>
-      <button
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         onClick={() => navigate("/financas")}
         className="group relative flex flex-col items-center bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-lg hover:shadow-xl border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all duration-300 w-full max-w-sm"
       >
@@ -34,8 +42,8 @@ const HomePage = () => {
         <p className="text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-4 py-1.5 rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-colors">
           Acessar minhas finanças
         </p>
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 };
 

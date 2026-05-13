@@ -18,6 +18,7 @@ import {
 } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { ptBR } from "date-fns/locale";
+import { motion } from "framer-motion";
 
 // Icones
 import {
@@ -124,9 +125,30 @@ const DashboardPage = () => {
   const capitalizedMonth =
     monthName.charAt(0).toUpperCase() + monthName.slice(1);
 
+  // Configuração de animação para os itens da lista
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="space-y-6 md:space-y-8 max-w-4xl mx-auto pb-20 md:pb-0">
-      <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all relative overflow-hidden">
+    <motion.div 
+      initial="hidden"
+      animate="show"
+      variants={container}
+      className="space-y-6 md:space-y-8 max-w-4xl mx-auto pb-20 md:pb-0"
+    >
+      <motion.div variants={item} className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all relative overflow-hidden">
         <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5 pointer-events-none">
           <CalendarIcon size={80} className="md:w-[120px] md:h-[120px]" />
         </div>
@@ -182,7 +204,11 @@ const DashboardPage = () => {
           </div>
         </div>
         {showCalendar && (
-          <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-4 duration-300 relative z-10">
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 relative z-10"
+          >
             <div className="grid grid-cols-7 gap-1 text-center mb-2">
               {weekDays.map((d) => (
                 <div key={d} className="text-xs font-bold text-slate-400 py-2">
@@ -225,56 +251,45 @@ const DashboardPage = () => {
                 );
               })}
             </div>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
-        <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-emerald-100 dark:bg-emerald-900/30 p-2.5 rounded-xl text-emerald-600 dark:text-emerald-400">
-              <TrendingUp size={20} />
+        {[
+          { label: "Entradas", value: totalGanhos, icon: <TrendingUp size={20} />, color: "emerald" },
+          { label: "Saídas", value: totalGastos, icon: <TrendingDown size={20} />, color: "rose" },
+          { label: "Saldo", value: saldo, icon: <Wallet size={20} />, isSaldo: true }
+        ].map((card, idx) => (
+          <motion.div 
+            key={idx}
+            variants={item}
+            className={cn(
+              "p-5 md:p-6 rounded-3xl border shadow-sm",
+              card.isSaldo 
+                ? (saldo >= 0 ? "bg-primary text-white border-primary" : "bg-rose-600 text-white border-rose-600")
+                : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+            )}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className={cn(
+                "p-2.5 rounded-xl",
+                card.isSaldo ? "bg-white/20" : `bg-${card.color}-100 dark:bg-${card.color}-900/30 text-${card.color}-600 dark:text-${card.color}-400`
+              )}>
+                {card.icon}
+              </div>
+              <span className={cn("text-xs font-bold uppercase", !card.isSaldo && "text-slate-500")}>
+                {card.label}
+              </span>
             </div>
-            <span className="text-xs font-bold text-slate-500 uppercase">
-              Entradas
-            </span>
-          </div>
-          <p className="text-2xl md:text-3xl font-black">
-            R${" "}
-            {totalGanhos.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-          </p>
-        </div>
-        <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-rose-100 dark:bg-rose-900/30 p-2.5 rounded-xl text-rose-600 dark:text-rose-400">
-              <TrendingDown size={20} />
-            </div>
-            <span className="text-xs font-bold text-slate-500 uppercase">
-              Saídas
-            </span>
-          </div>
-          <p className="text-2xl md:text-3xl font-black">
-            R${" "}
-            {totalGastos.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-          </p>
-        </div>
-        <div
-          className={cn(
-            "p-5 md:p-6 rounded-3xl shadow-lg border transition-colors",
-            saldo >= 0 ? "bg-primary text-white" : "bg-rose-600 text-white",
-          )}
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-white/20 p-2.5 rounded-xl">
-              <Wallet size={20} />
-            </div>
-            <span className="text-xs font-bold uppercase">Saldo</span>
-          </div>
-          <p className="text-2xl md:text-3xl font-black">
-            R$ {saldo.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-          </p>
-        </div>
+            <p className="text-2xl md:text-3xl font-black">
+              R$ {card.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            </p>
+          </motion.div>
+        ))}
       </div>
-      <div>
+
+      <motion.div variants={item}>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg md:text-xl font-bold">Movimentações</h3>
           <button
@@ -290,8 +305,9 @@ const DashboardPage = () => {
             const dateObj = parseISO(dateStr);
             const daySaldo = dayData.ganhos - dayData.gastos;
             return (
-              <button
+              <motion.button
                 key={dateStr}
+                whileHover={{ x: 5 }}
                 onClick={() => navigate(`/dia/${dateStr}`)}
                 className="w-full flex items-center bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all text-left group"
               >
@@ -333,12 +349,12 @@ const DashboardPage = () => {
                     className="text-slate-300 group-hover:text-primary transition-colors"
                   />
                 </div>
-              </button>
+              </motion.button>
             );
           })}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
