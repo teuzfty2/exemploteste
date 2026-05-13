@@ -104,9 +104,10 @@ const DashboardPage = () => {
       <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           
+          {/* w-fit e self-start impedem que a área de clique estique para todo lado vazio */}
           <button 
             onClick={() => setShowCalendar(!showCalendar)}
-            className="flex items-center gap-3 text-left group hover:opacity-80 transition-opacity"
+            className="flex items-center gap-3 text-left group hover:bg-slate-50 dark:hover:bg-slate-800/50 p-2 -ml-2 rounded-2xl transition-all w-fit self-start sm:self-auto"
           >
             <div className="bg-primary/10 p-3 rounded-2xl text-primary group-hover:scale-105 transition-transform">
               <CalendarIcon size={24} />
@@ -128,13 +129,13 @@ const DashboardPage = () => {
             </div>
           </button>
 
-          <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl self-end sm:self-auto border border-slate-100 dark:border-slate-800">
+          <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-800 w-full sm:w-auto justify-between sm:justify-start">
             <button onClick={prevMonth} className="p-2 md:p-3 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all hover:shadow-sm text-slate-600 dark:text-slate-300">
               <ChevronLeft size={18} />
             </button>
             <button 
               onClick={() => setCurrentMonth(new Date())}
-              className="px-4 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all hover:shadow-sm"
+              className="flex-1 sm:flex-none px-4 py-2 text-sm font-bold text-center text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all hover:shadow-sm"
             >
               Mês Atual
             </button>
