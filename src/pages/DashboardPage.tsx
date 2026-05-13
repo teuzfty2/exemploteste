@@ -88,18 +88,15 @@ const DashboardPage = () => {
   return (
     <div className="space-y-6 md:space-y-8 max-w-4xl mx-auto pb-20 md:pb-0">
       
-      {/* Novo Header Unificado */}
       <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all relative overflow-hidden">
         
-        {/* Ícone de Fundo */}
         <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5 pointer-events-none">
           <CalendarIcon size={80} className="md:w-[120px] md:h-[120px]" />
         </div>
 
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           
-          <div className="flex items-start sm:items-center gap-4">
-            {/* Botão Voltar Embutido */}
+          <div className="flex items-center gap-4">
             <button 
               onClick={() => navigate('/')}
               className="shrink-0 p-3 bg-slate-50 dark:bg-slate-800 hover:bg-primary hover:text-white dark:hover:bg-primary text-slate-500 dark:text-slate-400 rounded-2xl transition-all shadow-sm group"
@@ -110,19 +107,20 @@ const DashboardPage = () => {
             
             <button 
               onClick={() => setShowCalendar(!showCalendar)}
-              className="text-left group hover:opacity-80 transition-opacity w-fit"
+              className="text-left group hover:opacity-80 transition-opacity w-fit min-w-0"
             >
-              <h2 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white leading-tight flex items-center gap-2">
+              {/* Adicionado whitespace-nowrap e text-xl no mobile para evitar quebra */}
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-800 dark:text-white leading-tight flex items-center gap-2 whitespace-nowrap">
                 {capitalizedMonth} de {format(currentMonth, 'yyyy')}
                 <ChevronDown 
-                  size={24} 
+                  size={20} 
                   className={cn(
-                    "text-slate-400 transition-transform duration-300", 
+                    "text-slate-400 transition-transform duration-300 shrink-0", 
                     showCalendar && "rotate-180"
                   )} 
                 />
               </h2>
-              <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium mt-1">
+              <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
                 Visão mensal
               </p>
             </button>
@@ -144,7 +142,6 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Dropdown do Calendário */}
         {showCalendar && (
           <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-4 duration-300 relative z-10">
             <div className="grid grid-cols-7 gap-1 text-center mb-2">
@@ -187,7 +184,6 @@ const DashboardPage = () => {
         )}
       </div>
 
-      {/* Cards de Resumo Mensal */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
         <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
@@ -236,7 +232,6 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* Lista de Dias Movimentados */}
       <div>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">

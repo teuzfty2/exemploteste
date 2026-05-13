@@ -70,18 +70,15 @@ const DailyDetails = () => {
   return (
     <div className="space-y-6 md:space-y-8 max-w-4xl mx-auto pb-20 md:pb-0">
       
-      {/* Header com Botão Voltar Embutido */}
       <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden">
         
-        {/* Ícone de Fundo */}
         <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5 pointer-events-none">
           <ReceiptText size={80} className="md:w-[120px] md:h-[120px]" />
         </div>
         
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           
-          <div className="flex items-start sm:items-center gap-4">
-            {/* Botão Voltar */}
+          <div className="flex items-center gap-4">
             <button 
               onClick={() => navigate('/financas')}
               className="shrink-0 p-3 bg-slate-50 dark:bg-slate-800 hover:bg-primary hover:text-white dark:hover:bg-primary text-slate-500 dark:text-slate-400 rounded-2xl transition-all shadow-sm group"
@@ -90,22 +87,22 @@ const DailyDetails = () => {
               <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
             </button>
             
-            <div>
+            <div className="min-w-0">
               <div className="overflow-hidden pb-1">
+                {/* Adicionado whitespace-nowrap e ajustado fonte para não quebrar no celular */}
                 <h2 
                   key={date}
-                  className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight animate-in fade-in slide-in-from-top-8 duration-300"
+                  className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight animate-in fade-in slide-in-from-top-8 duration-300 whitespace-nowrap"
                 >
                   {formattedDate}
                 </h2>
               </div>
-              <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium mt-1">
+              <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
                 Fluxo de caixa diário
               </p>
             </div>
           </div>
 
-          {/* Controles de Navegação */}
           <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-800 w-full sm:w-auto justify-between sm:justify-start">
             <button 
               onClick={() => navigate(`/dia/${prevDayStr}`)}
