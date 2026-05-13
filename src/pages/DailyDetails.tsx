@@ -62,46 +62,50 @@ const DailyDetails = () => {
   const saldo = totalGanhos - totalGastos;
 
   const currentDateObj = date ? parseISO(date) : new Date();
-  // Removida a classe capitalize depois, então aqui fica no formato padrão natural
   const formattedDate = format(currentDateObj, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
   
-  // Datas para navegação rápida
   const prevDayStr = format(subDays(currentDateObj, 1), 'yyyy-MM-dd');
   const nextDayStr = format(addDays(currentDateObj, 1), 'yyyy-MM-dd');
 
   return (
     <div className="space-y-6 md:space-y-8 max-w-4xl mx-auto pb-20 md:pb-0">
-      <button 
-        onClick={() => navigate('/financas')}
-        className="group flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-medium"
-      >
-        <div className="p-1.5 rounded-lg group-hover:bg-primary/10 transition-colors">
-          <ArrowLeft size={18} />
-        </div>
-        <span>Voltar para Visão Mensal</span>
-      </button>
-
-      {/* Header com Navegação de Data Embutida */}
+      
+      {/* Header com Botão Voltar Embutido */}
       <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden">
+        
+        {/* Ícone de Fundo */}
         <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5 pointer-events-none">
           <ReceiptText size={80} className="md:w-[120px] md:h-[120px]" />
         </div>
         
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div>
-            {/* Wrapper invisível com overflow-hidden para dar o efeito de "recorte" da roleta do relógio */}
-            <div className="overflow-hidden pb-1">
-              <h2 
-                key={date} // A chave muda quando a data muda, forçando o React a recriar e rodar a animação
-                className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight animate-in fade-in slide-in-from-top-8 duration-300"
-              >
-                {formattedDate}
-              </h2>
+          
+          <div className="flex items-start sm:items-center gap-4">
+            {/* Botão Voltar */}
+            <button 
+              onClick={() => navigate('/financas')}
+              className="shrink-0 p-3 bg-slate-50 dark:bg-slate-800 hover:bg-primary hover:text-white dark:hover:bg-primary text-slate-500 dark:text-slate-400 rounded-2xl transition-all shadow-sm group"
+              title="Voltar para Visão Mensal"
+            >
+              <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
+            </button>
+            
+            <div>
+              <div className="overflow-hidden pb-1">
+                <h2 
+                  key={date}
+                  className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight animate-in fade-in slide-in-from-top-8 duration-300"
+                >
+                  {formattedDate}
+                </h2>
+              </div>
+              <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium mt-1">
+                Fluxo de caixa diário
+              </p>
             </div>
-            <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium mt-1">Fluxo de caixa diário</p>
           </div>
 
-          {/* Controles de Calendário na aba do Dia */}
+          {/* Controles de Navegação */}
           <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-800 w-full sm:w-auto justify-between sm:justify-start">
             <button 
               onClick={() => navigate(`/dia/${prevDayStr}`)}

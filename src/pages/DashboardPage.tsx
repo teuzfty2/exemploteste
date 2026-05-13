@@ -44,11 +44,9 @@ const DashboardPage = () => {
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
 
-  // Filtrar dados do mês atual
   const currentMonthStr = format(currentMonth, 'yyyy-MM');
   const monthEntries = entries.filter(e => e.date.startsWith(currentMonthStr));
 
-  // Resumos do mês
   const totalGanhos = monthEntries
     .filter(e => e.type === 'ganho')
     .reduce((acc, curr) => acc + curr.amount, 0);
@@ -59,7 +57,6 @@ const DashboardPage = () => {
 
   const saldo = totalGanhos - totalGastos;
 
-  // Agrupar dias que tem movimentação para listar e mostrar no calendário
   const daysMap = entries.reduce((acc, entry) => {
     if (!acc[entry.date]) acc[entry.date] = { ganhos: 0, gastos: 0, count: 0 };
     if (entry.type === 'ganho') acc[entry.date].ganhos += entry.amount;
@@ -68,7 +65,6 @@ const DashboardPage = () => {
     return acc;
   }, {} as Record<string, { ganhos: number, gastos: number, count: number }>);
 
-  // Filtrar apenas os dias do mês atual que têm movimentação para a lista de cards
   const activeDays = Object.keys(daysMap)
     .filter(date => date.startsWith(currentMonthStr))
     .sort((a, b) => b.localeCompare(a));
@@ -78,7 +74,6 @@ const DashboardPage = () => {
     navigate(`/dia/${todayStr}`);
   };
 
-  // Lógica do Calendário (Grid)
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
@@ -86,48 +81,52 @@ const DashboardPage = () => {
   const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
+  // Capitaliza a primeira letra do mês
+  const monthName = format(currentMonth, 'MMMM', { locale: ptBR });
+  const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
   return (
     <div className="space-y-6 md:space-y-8 max-w-4xl mx-auto pb-20 md:pb-0">
       
-      {/* Botão Voltar */}
-      <button 
-        onClick={() => navigate('/')}
-        className="group flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-medium"
-      >
-        <div className="p-1.5 rounded-lg group-hover:bg-primary/10 transition-colors">
-          <ArrowLeft size={18} />
+      {/* Novo Header Unificado */}
+      <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all relative overflow-hidden">
+        
+        {/* Ícone de Fundo */}
+        <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5 pointer-events-none">
+          <CalendarIcon size={80} className="md:w-[120px] md:h-[120px]" />
         </div>
-        <span>Voltar para o Início</span>
-      </button>
 
-      {/* Header com Navegação de Meses */}
-      <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           
-          {/* w-fit e self-start impedem que a área de clique estique para todo lado vazio */}
-          <button 
-            onClick={() => setShowCalendar(!showCalendar)}
-            className="flex items-center gap-3 text-left group hover:bg-slate-50 dark:hover:bg-slate-800/50 p-2 -ml-2 rounded-2xl transition-all w-fit self-start sm:self-auto"
-          >
-            <div className="bg-primary/10 p-3 rounded-2xl text-primary group-hover:scale-105 transition-transform">
-              <CalendarIcon size={24} />
-            </div>
-            <div className="flex items-center gap-2">
-              <div>
-                <h2 className="text-xl md:text-2xl font-black capitalize text-slate-800 dark:text-white leading-tight">
-                  {format(currentMonth, 'MMMM', { locale: ptBR })}
-                </h2>
-                <p className="text-sm font-medium text-slate-500">{format(currentMonth, 'yyyy')}</p>
-              </div>
-              <ChevronDown 
-                size={20} 
-                className={cn(
-                  "text-slate-400 transition-transform duration-300 ml-1", 
-                  showCalendar && "rotate-180"
-                )} 
-              />
-            </div>
-          </button>
+          <div className="flex items-start sm:items-center gap-4">
+            {/* Botão Voltar Embutido */}
+            <button 
+              onClick={() => navigate('/')}
+              className="shrink-0 p-3 bg-slate-50 dark:bg-slate-800 hover:bg-primary hover:text-white dark:hover:bg-primary text-slate-500 dark:text-slate-400 rounded-2xl transition-all shadow-sm group"
+              title="Voltar para o Início"
+            >
+              <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
+            </button>
+            
+            <button 
+              onClick={() => setShowCalendar(!showCalendar)}
+              className="text-left group hover:opacity-80 transition-opacity w-fit"
+            >
+              <h2 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white leading-tight flex items-center gap-2">
+                {capitalizedMonth} de {format(currentMonth, 'yyyy')}
+                <ChevronDown 
+                  size={24} 
+                  className={cn(
+                    "text-slate-400 transition-transform duration-300", 
+                    showCalendar && "rotate-180"
+                  )} 
+                />
+              </h2>
+              <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium mt-1">
+                Visão mensal
+              </p>
+            </button>
+          </div>
 
           <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-800 w-full sm:w-auto justify-between sm:justify-start">
             <button onClick={prevMonth} className="p-2 md:p-3 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all hover:shadow-sm text-slate-600 dark:text-slate-300">
@@ -145,9 +144,9 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Dropdown do Calendário Interativo */}
+        {/* Dropdown do Calendário */}
         {showCalendar && (
-          <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-4 duration-300 relative z-10">
             <div className="grid grid-cols-7 gap-1 text-center mb-2">
               {weekDays.map(d => (
                 <div key={d} className="text-xs font-bold text-slate-400 py-2">{d}</div>
@@ -174,8 +173,6 @@ const DashboardPage = () => {
                     )}
                   >
                     <span className="text-sm md:text-base font-medium">{format(day, 'd')}</span>
-                    
-                    {/* Pontinhos indicadores se houver movimentação */}
                     {dayData && isCurrentMonth && (
                       <div className="flex gap-0.5 mt-1">
                         {dayData.ganhos > 0 && <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-emerald-500" />}
