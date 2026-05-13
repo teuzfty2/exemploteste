@@ -2,7 +2,8 @@ export type EntryType = "ganho" | "gasto";
 
 export interface FinanceEntry {
   id: string;
-  description: string;
+  category: string; // Novo campo para o grupo (ex: Cartão, Supermercado)
+  description: string; // Descrição detalhada
   amount: number;
   type: EntryType;
   date: string;
