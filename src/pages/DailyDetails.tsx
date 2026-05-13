@@ -256,7 +256,8 @@ const DailyDetails = () => {
         <div className="p-6 border-b border-slate-100 dark:border-slate-800">
           <h3 className="font-bold text-slate-900 dark:text-white">Lançamentos deste dia</h3>
         </div>
-        <div className="divide-y divide-slate-100 dark:divide-slate-800">
+        {/* Adicionada altura máxima e scroll aqui */}
+        <div className="divide-y divide-slate-100 dark:divide-slate-800 max-h-[400px] overflow-y-auto custom-scrollbar">
           <AnimatePresence mode="popLayout">
             {entries.length === 0 ? (
               <motion.div 
