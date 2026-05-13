@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format, parseISO, addDays, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -34,7 +34,7 @@ const DailyDetails = () => {
 
   const entries = allEntries.filter(e => e.date === date);
 
-  const handleAddEntry = (e: React.FormEvent) => {
+  const handleAddEntry = (e: FormEvent) => {
     e.preventDefault();
     if (!description || !amount) return;
 
