@@ -185,7 +185,7 @@ const DailyDetails = () => {
             key={idx}
             variants={itemVariants}
             className={cn(
-              "p-5 md:p-6 rounded-2xl border shadow-sm",
+              "p-5 md:p-6 rounded-2xl border shadow-sm overflow-hidden",
               card.isSaldo 
                 ? (saldo >= 0 ? "bg-primary text-white border-primary shadow-primary/20 shadow-lg" : "bg-rose-600 text-white border-rose-600 shadow-rose-600/20 shadow-lg")
                 : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
@@ -202,7 +202,10 @@ const DailyDetails = () => {
                 {card.label}
               </span>
             </div>
-            <p className="text-xl md:text-2xl font-black">
+            <p 
+              className="text-xl md:text-2xl font-black truncate whitespace-nowrap"
+              title={`R$ ${card.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+            >
               R$ {card.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </p>
           </motion.div>

@@ -265,24 +265,27 @@ const DashboardPage = () => {
             key={idx}
             variants={item}
             className={cn(
-              "p-5 md:p-6 rounded-3xl border shadow-sm",
+              "p-5 md:p-6 rounded-3xl border shadow-sm overflow-hidden",
               card.isSaldo 
                 ? (saldo >= 0 ? "bg-primary text-white border-primary" : "bg-rose-600 text-white border-rose-600")
                 : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
             )}
           >
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center justify-between mb-4">
               <div className={cn(
                 "p-2.5 rounded-xl",
                 card.isSaldo ? "bg-white/20" : `bg-${card.color}-100 dark:bg-${card.color}-900/30 text-${card.color}-600 dark:text-${card.color}-400`
               )}>
                 {card.icon}
               </div>
-              <span className={cn("text-xs font-bold uppercase", !card.isSaldo && "text-slate-500")}>
+              <span className={cn("text-[10px] font-bold uppercase tracking-wider", card.isSaldo ? "text-white/80" : "text-slate-500")}>
                 {card.label}
               </span>
             </div>
-            <p className="text-2xl md:text-3xl font-black">
+            <p 
+              className="text-xl md:text-2xl font-black truncate whitespace-nowrap"
+              title={`R$ ${card.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
+            >
               R$ {card.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
             </p>
           </motion.div>
