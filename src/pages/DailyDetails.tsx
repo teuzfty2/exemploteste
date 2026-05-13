@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format, parseISO, addDays, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -89,7 +89,6 @@ const DailyDetails = () => {
             
             <div className="min-w-0">
               <div className="overflow-hidden pb-1">
-                {/* Adicionado whitespace-nowrap e ajustado fonte para não quebrar no celular */}
                 <h2 
                   key={date}
                   className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight animate-in fade-in slide-in-from-top-8 duration-300 whitespace-nowrap"

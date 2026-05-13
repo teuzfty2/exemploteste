@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   format, 
@@ -109,7 +109,6 @@ const DashboardPage = () => {
               onClick={() => setShowCalendar(!showCalendar)}
               className="text-left group hover:opacity-80 transition-opacity w-fit min-w-0"
             >
-              {/* Adicionado whitespace-nowrap e text-xl no mobile para evitar quebra */}
               <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-800 dark:text-white leading-tight flex items-center gap-2 whitespace-nowrap">
                 {capitalizedMonth} de {format(currentMonth, 'yyyy')}
                 <ChevronDown 

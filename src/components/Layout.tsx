@@ -1,8 +1,8 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Wallet } from 'lucide-react';
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
       <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">

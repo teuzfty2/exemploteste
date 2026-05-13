@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 
@@ -21,7 +20,6 @@ const HomePage = () => {
         </div>
         
         <div className="w-28 h-28 mb-5 rounded-full overflow-hidden border-4 border-slate-50 dark:border-slate-800 shadow-md group-hover:scale-105 transition-transform duration-300 bg-slate-100 dark:bg-slate-800">
-          {/* Você pode trocar este link pelo URL da sua foto real depois */}
           <img 
             src="https://ui-avatars.com/api/?name=Matheus+Filipe&background=8b5cf6&color=fff&size=256&font-size=0.4" 
             alt="Matheus Filipe" 
