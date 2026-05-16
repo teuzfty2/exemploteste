@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/DashboardPage";
@@ -27,6 +28,7 @@ function App() {
 
   return (
     <Router>
+      <Toaster position="top-right" />
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
