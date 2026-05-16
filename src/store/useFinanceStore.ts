@@ -1,42 +1,32 @@
-// Libs
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
-// Types
 import type { FinanceEntry } from "../types/finance";
+import { postFinancas } from "../services/postFinancas";
 
-// Tipagem da store financeira
 interface FinanceState {
   entries: FinanceEntry[];
-  addEntry: (entry: FinanceEntry) => void;
+  setEntries: (entries: FinanceEntry[]) => void;
+  addEntry: (entry: FinanceEntry) => Promise<void>;
   deleteEntry: (id: string) => void;
   getEntriesByDate: (date: string) => FinanceEntry[];
 }
 
+export const useFinanceStore = create<FinanceState>((set, get) => ({
+  entries: [],
 
-// Criação da store global
-export const useFinanceStore = create<FinanceState>()(
-  persist(
-    (set, get) => ({
+  setEntries: (entries) => set({ entries }),
 
-      // Estado inicial
-      entries: [],
+  addEntry: async (entry) => {
+    try {
+      await postFinancas(entry);
+      set((state) => ({ entries: [...state.entries, entry] }));
+    } catch (error) {
+      console.error("Erro ao salvar no banco:", error);
+      throw error;
+    }
+  },
 
-      // Adiciona nova entrada na lista
-      addEntry: (entry) =>
-        set((state) => ({ entries: [...state.entries, entry] })),
+  deleteEntry: (id) =>
+    set((state) => ({ entries: state.entries.filter((e) => e.id !== id) })),
 
-      // Remove entrada pelo ID
-      deleteEntry: (id) =>
-        set((state) => ({ entries: state.entries.filter((e) => e.id !== id) })),
-
-      // Retorna entradas de uma data específica
-      getEntriesByDate: (date) => get().entries.filter((e) => e.date === date),
-    }),
-    
-    {
-      // Nome salvo no localStorage
-      name: "financa-diaria-storage",
-    },
-  ),
-);
+  getEntriesByDate: (date) => get().entries.filter((e) => e.date === date),
+}));

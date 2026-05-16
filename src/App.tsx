@@ -1,17 +1,30 @@
 "use client";
 
-// Libs
+import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-// Componentes
 import Layout from "./components/Layout";
-
-// Pages
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/DashboardPage";
 import DailyDetails from "./pages/DailyDetails";
+import { useFinanceStore } from "./store/useFinanceStore";
+import { getFinancas } from "./services/getFinancas";
 
 function App() {
+  const setEntries = useFinanceStore((state) => state.setEntries);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await getFinancas();
+        setEntries(data);
+      } catch (error) {
+        console.error("Falha na sincronização inicial:", error);
+      }
+    };
+
+    loadData();
+  }, [setEntries]);
+
   return (
     <Router>
       <Layout>
